@@ -131,7 +131,7 @@ class Database:
         id SERIAL PRIMARY KEY,
         file_id VARCHAR(150) NULL,
         file_name VARCHAR(255) NULL,
-        file_type TEXT NULL,
+        file_type VARCHAR(50) NULL,
         caption VARCHAR(4000) NULL
         );
         """

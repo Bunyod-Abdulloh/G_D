@@ -34,6 +34,8 @@ yarl = "==1.9.2"
 asyncpg = "~=0.28.0"
 pandas = "==2.1.0"
 openpyxl = "==3.1.2"
+django = "==3.2.8"
+psycopg2 = "*"
 
 [dev-packages]
 
