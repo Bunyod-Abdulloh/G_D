@@ -35,10 +35,34 @@ async def check_channel_subscription(user_id: int, channel_id: int) -> bool:
 
 @router.message(F.text == "salom")
 async def samplerr(message: types.Message):
-    checker = await check_channel_subscription(
-        user_id=message.from_user.id, channel_id=channels_list[0]
+    # checker = await check_channel_subscription(
+    #     user_id=message.from_user.id, channel_id=channels_list[0]
+    # )
+    # if checker:
+    #     print("Sizga dars ochiq")
+    # else:
+    #     print("Siz darsga ro'yxatdan o'tmagansiz! Admin bilan bog'laning")
+    select_media = await db.select_all_media(
+        table_name="medias_table3"
     )
-    if checker:
-        print("Sizga dars ochiq")
-    else:
-        print("Siz darsga ro'yxatdan o'tmagansiz! Admin bilan bog'laning")
+    print(select_media)
+
+
+@router.message(F.photo | F.audio | F.video | F.document)
+async def get_media(message: types.Message):
+    if message.photo:
+        await message.answer(
+            text=f"<code>{message.photo[-1].file_id}</code>"
+        )
+    if message.audio:
+        await message.answer(
+            text=f"<code>{message.audio.file_id}</code>"
+        )
+    if message.video:
+        await message.answer(
+            text=f"<code>{message.video.file_id}</code>"
+        )
+    if message.document:
+        await message.answer(
+            text=f"<code>{message.document.file_id}</code>"
+        )

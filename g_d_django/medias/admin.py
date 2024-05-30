@@ -1,8 +1,5 @@
 from django.contrib import admin
-from django.http import HttpResponse
-
-# Register your models here.
-from .models import User, table_1, table_2, table_3, table_4, table_5, table_6, table_7, table_8, table_9
+from .models import User, Table1, Table2, Table3, Table4, Table5, Table6, Table7, Table8, Table9, Tables
 
 
 class CommonAdmin(admin.ModelAdmin):
@@ -10,13 +7,11 @@ class CommonAdmin(admin.ModelAdmin):
     ordering = ('lesson_number',)
 
 
-admin.site.register(table_1, CommonAdmin)
-admin.site.register(table_2, CommonAdmin)
-admin.site.register(table_3, CommonAdmin)
-admin.site.register(table_4, CommonAdmin)
-admin.site.register(table_5, CommonAdmin)
-admin.site.register(table_6, CommonAdmin)
-admin.site.register(table_7, CommonAdmin)
-admin.site.register(table_8, CommonAdmin)
-admin.site.register(table_9, CommonAdmin)
+tables = [Table1, Table2, Table3, Table4, Table5, Table6, Table7, Table8]
+
+for table in tables:
+    admin.site.register(table, CommonAdmin)
+
+admin.site.register(Table9, CommonAdmin)
+admin.site.register(Tables)
 admin.site.register(User)
