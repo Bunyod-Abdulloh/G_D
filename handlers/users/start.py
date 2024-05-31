@@ -4,6 +4,8 @@ from aiogram.filters import CommandStart
 from aiogram.client.session.middlewares.request_logging import logger
 
 from data.config import ADMINS
+from keyboards.inline.buttons import lessons_main_ikb
+from keyboards.reply.main_dkb import main_dkb
 from loader import db, bot
 
 router = Router()
@@ -19,7 +21,8 @@ async def do_start(message: types.Message):
         await db.add_user(telegram_id=telegram_id, full_name=full_name, username=username)
     except Exception as error:
         logger.info(error)
-    await message.answer(f"Assalomu alaykum {full_name}!")
+    await message.answer(f"Assalomu alaykum {full_name}!", reply_markup=main_dkb)
+    await message.answer(text="Botimizga xush kelibsiz!", reply_markup=await lessons_main_ikb())
 
 
 channels_list = [-1001917132582]
@@ -42,9 +45,7 @@ async def samplerr(message: types.Message):
     #     print("Sizga dars ochiq")
     # else:
     #     print("Siz darsga ro'yxatdan o'tmagansiz! Admin bilan bog'laning")
-    select_media = await db.select_all_media(
-        table_name="medias_table3"
-    )
+    select_media = await db.select_all_tables()
     print(select_media)
 
 

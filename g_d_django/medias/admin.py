@@ -7,11 +7,16 @@ class CommonAdmin(admin.ModelAdmin):
     ordering = ('lesson_number',)
 
 
+class CommonAdminTwo(admin.ModelAdmin):
+    list_display = ('table_number', 'table_name', 'files')
+    ordering = ('table_number',)
+
+
 tables = [Table1, Table2, Table3, Table4, Table5, Table6, Table7, Table8]
 
 for table in tables:
     admin.site.register(table, CommonAdmin)
 
 admin.site.register(Table9, CommonAdmin)
-admin.site.register(Tables)
+admin.site.register(Tables, CommonAdminTwo)
 admin.site.register(User)

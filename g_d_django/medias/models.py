@@ -12,7 +12,7 @@ class User(models.Model):
 
 
 class BaseLessonModel(models.Model):
-    lesson_number = models.CharField(verbose_name="Dars tartib raqami", primary_key=True, max_length=200)
+    lesson_number = models.CharField(verbose_name="Dars tartib raqami", primary_key=True, max_length=6)
     audio_id = models.CharField(verbose_name="Audio ID", max_length=50, blank=True)
     photo_id = models.CharField(verbose_name="Rasm ID", max_length=50, blank=True)
     video_id = models.CharField(verbose_name="Video ID", max_length=50, blank=True)
@@ -73,13 +73,13 @@ class Table8(BaseLessonModel):
 
 
 class Table9(BaseLessonModel):
-    lesson_number = models.CharField(verbose_name="Suhbat tartib raqami", primary_key=True, max_length=500)
+    lesson_number = models.CharField(verbose_name="Suhbat tartib raqami", primary_key=True, max_length=6)
     audio_id = models.CharField(verbose_name="Audio ID", max_length=50, blank=True)
     photo_id = models.CharField(verbose_name="Rasm ID", max_length=50, blank=True)
     video_id = models.CharField(verbose_name="Video ID", max_length=50, blank=True)
     document_id = models.CharField(verbose_name="Document ID", max_length=50, blank=True)
     file_name = models.CharField(verbose_name="Fayl nomi", max_length=150, null=True)
-    caption = models.TextField(verbose_name="Tavsif", max_length=4000, null=True)
+    caption = models.TextField(verbose_name="Tavsif", null=True)
 
     class Meta:
         verbose_name = 'Turli suhbatlar'
@@ -87,16 +87,13 @@ class Table9(BaseLessonModel):
 
 
 class Tables(models.Model):
-    table_number = models.CharField(verbose_name='Dars tartib raqami:', primary_key=True, max_length=200)
+    table_number = models.CharField(verbose_name='Dars tartib raqami:', primary_key=True, max_length=6)
     table_name = models.CharField(verbose_name='Dars nomi:', max_length=100, null=True)
-    channel_id = models.CharField(verbose_name='Kanal ID raqami:', max_length=50, blank=True)
-    comment_one = models.TextField(verbose_name='Izohlar:', blank=True)
+    channel_id = models.CharField(verbose_name='Kanal ID raqami:', max_length=50, null=True, blank=True)
+    comment = models.TextField(verbose_name='Izohlar:', null=True, blank=True)
     files = models.BooleanField(verbose_name='Darsga fayllar yuklangan bo\'lsa katakchani belgilab qo\'ying',
                                 default=False)
 
     class Meta:
         verbose_name = 'Darslar jadvali'
         verbose_name_plural = 'Darslar jadvali'
-
-    def __str__(self):
-        return f"{self.table_number}. {self.table_name} | {self.files}"

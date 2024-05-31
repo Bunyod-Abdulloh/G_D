@@ -70,10 +70,6 @@ class Database:
         sql = "SELECT COUNT(*) FROM medias_user"
         return await self.execute(sql, fetchval=True)
 
-    async def update_user_username(self, username, telegram_id):
-        sql = "UPDATE medias_user SET username=$1 WHERE telegram_id=$2"
-        return await self.execute(sql, username, telegram_id, execute=True)
-
     async def delete_users(self):
         await self.execute("DELETE FROM medias_user WHERE TRUE", execute=True)
 
@@ -81,66 +77,21 @@ class Database:
         await self.execute("DROP TABLE medias_user", execute=True)
 
 # ======================= TABLE | TABLES =======================
-    async def create_table_tables(self):
-        sql = """
-        CREATE TABLE IF NOT EXISTS Tables (
-        id SERIAL PRIMARY KEY,
-        table_name VARCHAR(255) NULL,
-        channel_id TEXT NULL,
-        comment_one TEXT NULL,
-        comment_two TEXT NULL,
-        files BOOLEAN DEFAULT FALSE
-        );
-        """
-        await self.execute(sql, execute=True)
-
-    async def add_table(self, table_name, channel_id):
-        sql = f"INSERT INTO Tables (table_name, channel_id) VALUES($1, $2) returning id"
-        return await self.execute(sql, table_name, channel_id, fetchrow=True)
-
     async def select_all_tables(self):
-        sql = f"SELECT * FROM Tables ORDER BY id"
+        sql = f"SELECT * FROM medias_tables ORDER BY table_number"
         return await self.execute(sql, fetch=True)
 
-    async def select_media_by_id(self, id_):
-        sql = f"SELECT * FROM Tables WHERE id=$1"
-        return await self.execute(sql, id_, fetchrow=True)
+    async def select_media_by_id(self, table_number):
+        sql = f"SELECT * FROM medias_tables WHERE table_number='{table_number}'"
+        return await self.execute(sql, fetchrow=True)
 
-    async def db_update_comments(self, comment_one, comment_two, id_):
-        sql = f"UPDATE Tables SET comment_one=$1, comment_two=$2 WHERE id='{id_}'"
-        return await self.execute(sql, comment_one, comment_two, execute=True)
-
-    async def update_media_name(self, new_name, id_):
-        sql = f"UPDATE Tables SET table_name='{new_name}' WHERE id='{id_}'"
-        return await self.execute(sql, execute=True)
-
-    async def update_media_status(self, id_):
-        sql = f"UPDATE Tables SET files=TRUE WHERE id='{id_}'"
-        return await self.execute(sql, execute=True)
-
-    async def delete_table_tables(self, id_):
-        await self.execute(f"DELETE FROM Tables WHERE id='{id_}'", execute=True)
+    async def delete_table_tables(self, table_number):
+        await self.execute(f"DELETE FROM medias_tables WHERE table_number='{table_number}'", execute=True)
 
     async def drop_table_tables(self):
-        await self.execute(f"DROP TABLE Tables", execute=True)
+        await self.execute(f"DROP TABLE medias_tables", execute=True)
 
 # ======================= TABLE | MEDIA =======================
-#     async def create_media_table(self, media_table):
-#         sql = f"""
-#         CREATE TABLE IF NOT EXISTS {media_table} (
-#         id SERIAL PRIMARY KEY,
-#         file_id VARCHAR(150) NULL,
-#         file_name VARCHAR(255) NULL,
-#         file_type VARCHAR(50) NULL,
-#         caption VARCHAR(4000) NULL
-#         );
-#         """
-#         await self.execute(sql, execute=True)
-
-    # async def add_media(self, table_name, file_id, file_name, file_type, caption):
-    #     sql = f"INSERT INTO {table_name} (file_id, file_name, file_type, caption) VALUES($1, $2, $3, $4) returning *"
-    #     return await self.execute(sql, file_id, file_name, file_type, caption, fetchrow=True)
-
     async def select_all_media(self, table_name):
         sql = f"SELECT * FROM {table_name} ORDER BY lesson_number"
         return await self.execute(sql, fetch=True)
