@@ -10,19 +10,76 @@ inline_keyboard = [[
 are_you_sure_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-async def lessons_main_ikb():
-    all_lessons = await db.select_all_tables()
-    builder = InlineKeyboardBuilder()
-    for lesson in all_lessons:
-        builder.add(
+def key_returner(items, current_page, all_pages):
+    keys = InlineKeyboardBuilder()
+    for item in items:
+        keys.add(
             InlineKeyboardButton(
-                text=lesson['table_name'], callback_data=f"table:{lesson['table_number']}"
+                text=item['table_number'],
+                callback_data=f"table:{item['table_number']}:{current_page}"
             )
         )
-    builder.adjust(1)
-    # builder.add(
-    #     InlineKeyboardButton(
-    #         text="⬅️ Ortga", callback_data="back_main"
-    #     )
-    # )
-    return builder.as_markup()
+    keys.adjust(5)
+    keys.row(
+        InlineKeyboardButton(
+            text="◀️",
+            callback_data=f"prev:{current_page}"
+        ),
+        InlineKeyboardButton(
+            text=f"{current_page}/{all_pages}",
+            callback_data=f"alertmessage:{current_page}"
+        ),
+        InlineKeyboardButton(
+            text="▶️",
+            callback_data=f"next:{current_page}"
+        )
+    )
+    return keys.as_markup()
+
+
+def key_returner_selected(items, table_name, current_page, all_pages, selected):
+    keys = InlineKeyboardBuilder()
+    for item in items:
+        if selected == item['lesson_number']:
+            keys.add(
+                InlineKeyboardButton(
+                    text=f"[ {item['lesson_number']} ]",
+                    callback_data=f"id:{item['lesson_number']}:{current_page}:{table_name}"
+                )
+            )
+        else:
+            keys.add(
+                InlineKeyboardButton(
+                    text=f"{item['lesson_number']}",
+                    callback_data=f"id:{item['lesson_number']}:{current_page}:{table_name}"
+                )
+            )
+    keys.row(
+        InlineKeyboardButton(
+            text="◀️",
+            callback_data=f"prev:{current_page}:{table_name}"
+        ),
+        InlineKeyboardButton(
+            text=f"{current_page}/{all_pages}",
+            callback_data=f"alertmessage:{current_page}:{table_name}"
+        ),
+        InlineKeyboardButton(
+            text="▶️",
+            callback_data=f"next:{current_page}:{table_name}"
+        )
+    )
+    return keys.as_markup()
+
+# async def tables_menu(callback_text):
+#     all_tables = await db.select_all_tables()
+#
+#     builder = keyboard.InlineKeyboardBuilder()
+#
+#     for table in all_tables:
+#         builder.add(
+#             InlineKeyboardButton(
+#                 text=f"{table['table_name']}", callback_data=f"{callback_text}_{table['id']}"
+#             )
+#         )
+#     builder.adjust(1)
+#     return builder.as_markup()

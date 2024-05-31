@@ -4,7 +4,8 @@ from aiogram.filters import CommandStart
 from aiogram.client.session.middlewares.request_logging import logger
 
 from data.config import ADMINS
-from keyboards.inline.buttons import lessons_main_ikb
+from handlers.users.lessons_main_hr import extracter
+from keyboards.inline.buttons import key_returner
 from keyboards.reply.main_dkb import main_dkb
 from loader import db, bot
 
@@ -16,13 +17,23 @@ async def do_start(message: types.Message):
     telegram_id = message.from_user.id
     full_name = message.from_user.full_name
     username = message.from_user.username
-
+    all_tables = await db.select_all_tables()
+    extract = extracter(all_medias=all_tables)
+    current_page = 1
+    all_pages = len(extract)
+    items = extract[current_page - 1]
+    key = key_returner(
+        items=items, current_page=current_page, all_pages=all_pages
+    )
+    text = str()
+    for n in items:
+        text += f"{n['table_number']}. {n['table_name']}\n"
     try:
         await db.add_user(telegram_id=telegram_id, full_name=full_name, username=username)
     except Exception as error:
         logger.info(error)
-    await message.answer(f"Assalomu alaykum {full_name}!", reply_markup=main_dkb)
-    await message.answer(text="Botimizga xush kelibsiz!", reply_markup=await lessons_main_ikb())
+    await message.answer(f"Assalomu alaykum {full_name}! Botimizga xush kelibsiz!", reply_markup=main_dkb)
+    await message.answer(text=text, reply_markup=key)
 
 
 channels_list = [-1001917132582]

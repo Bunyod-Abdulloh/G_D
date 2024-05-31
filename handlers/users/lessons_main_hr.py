@@ -5,6 +5,13 @@ from loader import db
 lessons = Router()
 
 
+def extracter(all_medias):
+    empty_list = []
+    for e in range(0, len(all_medias), 10):
+        empty_list.append(all_medias[e:e + 10])
+    return empty_list
+
+
 @lessons.callback_query(F.data.startswith("table:"))
 async def lessons_hr_one(call: types.CallbackQuery):
     table_id = int(call.data.split(":")[1])
