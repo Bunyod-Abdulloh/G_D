@@ -2,7 +2,7 @@ from aiogram import Router, types, F
 from aiogram.filters import CommandStart
 from aiogram.client.session.middlewares.request_logging import logger
 
-from handlers.functions.check_subscription import extracter
+from handlers.functions.functions_one import extracter
 from keyboards.inline.buttons import key_returner
 from keyboards.reply.main_dkb import main_dkb
 from loader import db
