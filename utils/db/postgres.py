@@ -77,13 +77,28 @@ class Database:
         await self.execute("DROP TABLE medias_user", execute=True)
 
 # ======================= TABLE | TABLES =======================
+    async def create_table_tables(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS medias_tables (
+        table_number INTEGER PRIMARY KEY NOT NULL,
+        channel_id VARCHAR(50) NULL,
+        comment TEXT NULL,
+        files BOOLEAN DEFAULT FALSE
+        );
+        """
+        await self.execute(sql, execute=True)
+
     async def select_all_tables(self):
-        sql = f"SELECT * FROM medias_tables ORDER BY table_number"
+        sql = f"SELECT * FROM medias_tables ORDER BY table_number ASC"
         return await self.execute(sql, fetch=True)
 
     async def select_media_by_id(self, table_number):
         sql = f"SELECT * FROM medias_tables WHERE table_number='{table_number}'"
         return await self.execute(sql, fetchrow=True)
+
+    async def alter_type(self):
+        sql = f"ALTER TABLE medias_tables ALTER COLUMN table_number TYPE INTEGER"
+        return await self.execute(sql, execute=True)
 
     async def delete_table_tables(self, table_number):
         await self.execute(f"DELETE FROM medias_tables WHERE table_number='{table_number}'", execute=True)

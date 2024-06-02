@@ -12,7 +12,7 @@ class User(models.Model):
 
 
 class BaseLessonModel(models.Model):
-    lesson_number = models.CharField(verbose_name="Dars tartib raqami", primary_key=True, max_length=6)
+    lesson_number = models.IntegerField(verbose_name="Dars tartib raqami", primary_key=True)
     audio_id = models.CharField(verbose_name="Audio ID", max_length=50, blank=True)
     photo_id = models.CharField(verbose_name="Rasm ID", max_length=50, blank=True)
     video_id = models.CharField(verbose_name="Video ID", max_length=50, blank=True)
@@ -73,7 +73,7 @@ class Table8(BaseLessonModel):
 
 
 class Table9(BaseLessonModel):
-    lesson_number = models.CharField(verbose_name="Suhbat tartib raqami", primary_key=True, max_length=6)
+    lesson_number = models.IntegerField(verbose_name="Suhbat tartib raqami", primary_key=True)
     audio_id = models.CharField(verbose_name="Audio ID", max_length=50, blank=True)
     photo_id = models.CharField(verbose_name="Rasm ID", max_length=50, blank=True)
     video_id = models.CharField(verbose_name="Video ID", max_length=50, blank=True)
@@ -87,7 +87,7 @@ class Table9(BaseLessonModel):
 
 
 class Tables(models.Model):
-    table_number = models.CharField(verbose_name='Dars tartib raqami:', primary_key=True, max_length=6)
+    table_number = models.IntegerField(verbose_name='Dars tartib raqami:', primary_key=True, null=False)
     table_name = models.CharField(verbose_name='Dars nomi:', max_length=100, null=True)
     channel_id = models.CharField(verbose_name='Kanal ID raqami:', max_length=50, null=True, blank=True)
     comment = models.TextField(verbose_name='Izohlar:', null=True, blank=True)

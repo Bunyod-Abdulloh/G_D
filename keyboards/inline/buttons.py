@@ -15,7 +15,7 @@ def key_returner(items, current_page, all_pages):
     for item in items:
         keys.add(
             InlineKeyboardButton(
-                text=item['table_number'],
+                text=f"{item['table_number']}",
                 callback_data=f"table:{item['table_number']}:{current_page}"
             )
         )

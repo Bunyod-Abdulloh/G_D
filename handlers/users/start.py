@@ -1,3 +1,4 @@
+import aiogram.exceptions
 from aiogram import Router, types, F
 from aiogram.enums import ChatMemberStatus
 from aiogram.filters import CommandStart
@@ -18,7 +19,7 @@ async def do_start(message: types.Message):
     full_name = message.from_user.full_name
     username = message.from_user.username
     all_tables = await db.select_all_tables()
-    extract = extracter(all_medias=all_tables)
+    extract = extracter(all_medias=all_tables, delimiter=10)
     current_page = 1
     all_pages = len(extract)
     items = extract[current_page - 1]
@@ -35,6 +36,29 @@ async def do_start(message: types.Message):
     await message.answer(f"Assalomu alaykum {full_name}! Botimizga xush kelibsiz!", reply_markup=main_dkb)
     await message.answer(text=text, reply_markup=key)
 
+
+@router.callback_query(F.data.startswith("next:"))
+async def start_next_page(call: types.CallbackQuery):
+    current_page = int(call.data.split(':')[1])
+    tables = await db.select_all_tables()
+    extract = extracter(all_medias=tables, delimiter=10)
+    len_extract = len(extract)
+
+    if current_page == len_extract:
+        current_page = 1
+    else:
+        current_page += 1
+    await call.answer(cache_time=0)
+    items = extract[current_page - 1]
+    key = key_returner(
+        items=items, current_page=current_page, all_pages=len(extract)
+    )
+    text = str()
+    for n in items:
+        text += f"{n['table_number']}. {n['table_name']}\n"
+    await call.message.edit_text(
+        text=text, reply_markup=key
+    )
 
 channels_list = [-1001917132582]
 
@@ -56,8 +80,8 @@ async def samplerr(message: types.Message):
     #     print("Sizga dars ochiq")
     # else:
     #     print("Siz darsga ro'yxatdan o'tmagansiz! Admin bilan bog'laning")
-    select_media = await db.select_all_tables()
-    print(select_media)
+    await db.alter_type()
+    print("o'zgardi")
 
 
 @router.message(F.photo | F.audio | F.video | F.document)
