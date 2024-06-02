@@ -1,14 +1,11 @@
-import aiogram.exceptions
 from aiogram import Router, types, F
-from aiogram.enums import ChatMemberStatus
 from aiogram.filters import CommandStart
 from aiogram.client.session.middlewares.request_logging import logger
 
-from data.config import ADMINS
-from handlers.users.lessons_main_hr import extracter
+from handlers.functions.check_subscription import extracter
 from keyboards.inline.buttons import key_returner
 from keyboards.reply.main_dkb import main_dkb
-from loader import db, bot
+from loader import db
 
 router = Router()
 
@@ -39,6 +36,7 @@ async def do_start(message: types.Message):
 
 @router.callback_query(F.data.startswith("next:"))
 async def start_next_page(call: types.CallbackQuery):
+    await call.answer(cache_time=0)
     current_page = int(call.data.split(':')[1])
     tables = await db.select_all_tables()
     extract = extracter(all_medias=tables, delimiter=10)
@@ -48,7 +46,6 @@ async def start_next_page(call: types.CallbackQuery):
         current_page = 1
     else:
         current_page += 1
-    await call.answer(cache_time=0)
     items = extract[current_page - 1]
     key = key_returner(
         items=items, current_page=current_page, all_pages=len(extract)
@@ -60,15 +57,31 @@ async def start_next_page(call: types.CallbackQuery):
         text=text, reply_markup=key
     )
 
+
 channels_list = [-1001917132582]
 
 
-async def check_channel_subscription(user_id: int, channel_id: int) -> bool:
-    member = await bot.get_chat_member(chat_id=channel_id, user_id=user_id)
-    if member.status == ChatMemberStatus.MEMBER or str(member.user.id) in ADMINS:
-        return True
+@router.callback_query(F.data.startswith("prev:"))
+async def start_prev_page(call: types.CallbackQuery):
+    await call.answer(cache_time=0)
+    current_page = int(call.data.split(':')[1])
+    tables = await db.select_all_tables()
+    extract = extracter(all_medias=tables, delimiter=10)
+    len_extract = len(extract)
+    if current_page == 1:
+        current_page = len_extract
     else:
-        return False
+        current_page -= 1
+    items = extract[current_page - 1]
+    key = key_returner(
+        items=items, current_page=current_page, all_pages=len(extract)
+    )
+    text = str()
+    for n in items:
+        text += f"{n['table_number']}. {n['table_name']}\n"
+    await call.message.edit_text(
+        text=text, reply_markup=key
+    )
 
 
 @router.message(F.text == "salom")
