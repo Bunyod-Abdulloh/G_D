@@ -48,14 +48,14 @@ class Database:
         CREATE TABLE IF NOT EXISTS medias_user (
         id SERIAL PRIMARY KEY,
         full_name VARCHAR(255) NOT NULL,
-        username varchar(255) NULL,
+        username varchar(100) NULL,
         telegram_id BIGINT NOT NULL UNIQUE
         );
         """
         await self.execute(sql, execute=True)
 
     async def add_user(self, full_name, username, telegram_id):
-        sql = "INSERT INTO users (full_name, username, telegram_id) VALUES($1, $2, $3) returning *"
+        sql = "INSERT INTO medias_user (full_name, username, telegram_id) VALUES($1, $2, $3) returning *"
         return await self.execute(sql, full_name, username, telegram_id, fetchrow=True)
 
     async def select_all_users(self):
