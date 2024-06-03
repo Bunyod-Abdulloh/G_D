@@ -73,17 +73,33 @@ class Table8(BaseLessonModel):
 
 
 class Table9(BaseLessonModel):
-    lesson_number = models.IntegerField(verbose_name="Suhbat tartib raqami", primary_key=True)
+    lesson_number = models.IntegerField(verbose_name="Tartib raqam", primary_key=True)
     audio_id = models.CharField(verbose_name="Audio ID", max_length=150, blank=True)
     photo_id = models.CharField(verbose_name="Rasm ID", max_length=150, blank=True)
     video_id = models.CharField(verbose_name="Video ID", max_length=150, blank=True)
     document_id = models.CharField(verbose_name="Document ID", max_length=150, blank=True)
     file_name = models.CharField(verbose_name="Fayl nomi", max_length=150, null=True)
     caption = models.TextField(verbose_name="Tavsif", null=True)
+    link = models.TextField(verbose_name="Youtube link", null=True)
 
     class Meta:
-        verbose_name = 'Turli suhbatlar'
-        verbose_name_plural = 'Turli suhbatlar'
+        verbose_name = 'Suhbat va loyihalar'
+        verbose_name_plural = 'Suhbat va loyihalar'
+
+
+class Table10(models.Model):
+    articles_number = models.IntegerField(verbose_name="Maqola tartib raqami", primary_key=True)
+    audio_id = models.CharField(verbose_name="Audio ID", max_length=150, blank=True)
+    photo_id = models.CharField(verbose_name="Rasm ID", max_length=150, blank=True)
+    video_id = models.CharField(verbose_name="Video ID", max_length=150, blank=True)
+    document_id = models.CharField(verbose_name="Document ID", max_length=150, blank=True)
+    file_name = models.CharField(verbose_name="Fayl nomi", max_length=150, null=True)
+    articles_text = models.TextField(verbose_name="Maqola matni", null=True)
+    link = models.CharField(verbose_name="Maqola linki", max_length=150, null=True)
+
+    class Meta:
+        verbose_name = 'Maqolalar'
+        verbose_name_plural = 'Maqolalar'
 
 
 class Tables(models.Model):

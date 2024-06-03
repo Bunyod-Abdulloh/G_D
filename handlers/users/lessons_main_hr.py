@@ -21,24 +21,23 @@ async def lessons_hr_one(call: types.CallbackQuery):
     ibutton = key_returner_selected(
         items=items, current_page=current_page, all_pages=all_pages, selected=1, table_name=table_name
     )
-
-    if items[0]['photo_id']:
-        await call.message.answer_photo(
-            photo=items[0]['photo_id'], protect_content=True
-        )
-    if items[0]['audio_id']:
-        await call.message.answer_audio(
-            audio=items[0]['audio_id'], protect_content=True
-        )
-    if items[0]['document_id']:
-        await call.message.answer_document(
-            document=items[0]['document_id'], protect_content=True
-        )
-    if items[0]['video_id']:
-        await call.message.answer_video(
-            video=items[0]['video_id'], caption=items[0]['caption'],
-            protect_content=True, reply_markup=ibutton
-        )
+    #
+    # if items[0]['photo_id']:
+    #     await call.message.answer_photo(
+    #         photo=items[0]['photo_id'], protect_content=True
+    #     )
+    # if items[0]['audio_id']:
+    #     await call.message.answer_audio(
+    #         audio=items[0]['audio_id'], protect_content=True
+    #     )
+    # if items[0]['document_id']:
+    #     await call.message.answer_document(
+    #         document=items[0]['document_id'], protect_content=True
+    #     )
+    # if items[0]['video_id']:
+    await call.message.answer_video(
+        video=items[0]['video_id'], caption=items[0]['caption'], reply_markup=ibutton
+    )
 
 
 @lessons.callback_query(F.data.startswith("id:"))
@@ -62,19 +61,21 @@ async def get_id_and_selected(call: types.CallbackQuery):
     selected_media = await db.db_get_media_by_id(
         table_name=table_name, lesson_number=lesson_number
     )
-    if selected_media['photo_id']:
-        await call.message.answer_photo(
-                photo=selected_media['photo_id'], protect_content=True
-        )
-    if selected_media['audio_id']:
-        await call.message.answer_audio(
-            audio=selected_media['audio_id'], protect_content=True)
-    if selected_media['document_id']:
-        await call.message.answer_document(
-            document=selected_media['document_id'], protect_content=True
-        )
-    if selected_media['video_id']:
-        await call.message.answer_video(
-            video=selected_media['video_id'], caption=selected_media['caption'],
-            protect_content=True, reply_markup=ibutton
-        )
+    # if selected_media['photo_id']:
+    #     await call.message.answer_photo(
+    #             photo=selected_media['photo_id'], protect_content=True
+    #     )
+    # if selected_media['audio_id']:
+    #     await call.message.answer_audio(
+    #         audio=selected_media['audio_id'], protect_content=True)
+    # if selected_media['document_id']:
+    #     await call.message.answer_document(
+    #         document=selected_media['document_id'], protect_content=True
+    #     )
+    # if selected_media['video_id']:
+    await call.message.edit_media(
+        media=types.InputMediaVideo(
+            media=selected_media['video_id'],
+            caption=selected_media['caption']
+        ), reply_markup=ibutton
+    )
