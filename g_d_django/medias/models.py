@@ -94,7 +94,7 @@ class Table10(models.Model):
     video_id = models.CharField(verbose_name="Video ID", max_length=150, blank=True)
     document_id = models.CharField(verbose_name="Document ID", max_length=150, blank=True)
     file_name = models.CharField(verbose_name="Fayl nomi", max_length=150, null=True)
-    articles_text = models.TextField(verbose_name="Maqola matni", null=True)
+    articles_text = models.TextField(verbose_name="Maqola matni", null=True, blank=True)
     link = models.CharField(verbose_name="Maqola linki", max_length=150, null=True)
 
     class Meta:

@@ -70,6 +70,25 @@ def key_returner_selected(items, table_name, current_page, all_pages, selected):
     )
     return keys.as_markup()
 
+
+def key_returner_articles(current_page, all_pages):
+    keys = InlineKeyboardBuilder()
+    keys.row(
+        InlineKeyboardButton(
+            text="◀️",
+            callback_data=f"prev_articles:{current_page}"
+        ),
+        InlineKeyboardButton(
+            text=f"{current_page}/{all_pages}",
+            callback_data=f"alertarticles:{current_page}"
+        ),
+        InlineKeyboardButton(
+            text="▶️",
+            callback_data=f"next_articles:{current_page}"
+        )
+    )
+    return keys.as_markup()
+
 # async def tables_menu(callback_text):
 #     all_tables = await db.select_all_tables()
 #
