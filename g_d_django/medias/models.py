@@ -80,7 +80,7 @@ class Table9(BaseLessonModel):
     document_id = models.CharField(verbose_name="Document ID", max_length=150, blank=True)
     file_name = models.CharField(verbose_name="Fayl nomi", max_length=150, null=True)
     caption = models.TextField(verbose_name="Tavsif", null=True)
-    link = models.TextField(verbose_name="Youtube link", null=True)
+    link = models.CharField(verbose_name="Youtube link", max_length=200, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Suhbat va loyihalar'
