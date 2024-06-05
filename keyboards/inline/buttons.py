@@ -16,22 +16,22 @@ def key_returner(items, current_page, all_pages):
         keys.add(
             InlineKeyboardButton(
                 text=f"{item['table_number']}",
-                callback_data=f"table:{item['table_number']}:{current_page}"
+                callback_data=f"courses:{item['table_number']}:{current_page}"
             )
         )
     keys.adjust(5)
     keys.row(
         InlineKeyboardButton(
             text="◀️",
-            callback_data=f"prev:{current_page}"
+            callback_data=f"courses_prev:{current_page}"
         ),
         InlineKeyboardButton(
             text=f"{current_page}/{all_pages}",
-            callback_data=f"alertmessage:{current_page}"
+            callback_data=f"courses_alert:{current_page}"
         ),
         InlineKeyboardButton(
             text="▶️",
-            callback_data=f"next:{current_page}"
+            callback_data=f"courses_next:{current_page}"
         )
     )
     return keys.as_markup()

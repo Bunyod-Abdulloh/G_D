@@ -15,72 +15,11 @@ async def do_start(message: types.Message):
     telegram_id = message.from_user.id
     full_name = message.from_user.full_name
     username = message.from_user.username
-    # all_tables = await db.select_all_tables()
-    # extract = extracter(all_medias=all_tables, delimiter=10)
-    # current_page = 1
-    # all_pages = len(extract)
-    # items = extract[current_page - 1]
-    # key = key_returner(
-    #     items=items, current_page=current_page, all_pages=all_pages
-    # )
-    # text = str()
-    # for n in items:
-    #     text += f"{n['table_number']}. {n['table_name']}\n"
     try:
         await db.add_user(telegram_id=telegram_id, full_name=full_name, username=username)
     except Exception as error:
         logger.info(error)
     await message.answer(f"Assalomu alaykum {full_name}! Botimizga xush kelibsiz!", reply_markup=main_dkb)
-
-
-@router.callback_query(F.data.startswith("next:"))
-async def start_next_page(call: types.CallbackQuery):
-    await call.answer(cache_time=0)
-    current_page = int(call.data.split(':')[1])
-    tables = await db.select_all_tables()
-    extract = extracter(all_medias=tables, delimiter=10)
-    len_extract = len(extract)
-
-    if current_page == len_extract:
-        current_page = 1
-    else:
-        current_page += 1
-    items = extract[current_page - 1]
-    key = key_returner(
-        items=items, current_page=current_page, all_pages=len(extract)
-    )
-    text = str()
-    for n in items:
-        text += f"{n['table_number']}. {n['table_name']}\n"
-    await call.message.edit_text(
-        text=text, reply_markup=key
-    )
-
-
-channels_list = [-1001917132582]
-
-
-@router.callback_query(F.data.startswith("prev:"))
-async def start_prev_page(call: types.CallbackQuery):
-    await call.answer(cache_time=0)
-    current_page = int(call.data.split(':')[1])
-    tables = await db.select_all_tables()
-    extract = extracter(all_medias=tables, delimiter=10)
-    len_extract = len(extract)
-    if current_page == 1:
-        current_page = len_extract
-    else:
-        current_page -= 1
-    items = extract[current_page - 1]
-    key = key_returner(
-        items=items, current_page=current_page, all_pages=len(extract)
-    )
-    text = str()
-    for n in items:
-        text += f"{n['table_number']}. {n['table_name']}\n"
-    await call.message.edit_text(
-        text=text, reply_markup=key
-    )
 
 
 @router.message(F.text == "salom")

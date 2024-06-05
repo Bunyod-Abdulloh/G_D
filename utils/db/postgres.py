@@ -88,8 +88,8 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
-    async def select_all_tables(self):
-        sql = f"SELECT * FROM medias_tables ORDER BY table_number ASC"
+    async def select_all_tables(self, table_type):
+        sql = f"SELECT * FROM medias_tables WHERE table_type='{table_type}' ORDER BY table_number ASC"
         return await self.execute(sql, fetch=True)
 
     async def select_media_by_id(self, table_number):

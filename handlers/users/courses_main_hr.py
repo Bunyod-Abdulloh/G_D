@@ -1,26 +1,118 @@
 from aiogram import Router, F, types
 
 from handlers.functions.functions_one import extracter
-from keyboards.inline.buttons import key_returner_selected
+from keyboards.inline.buttons import key_returner_selected, key_returner
 from loader import db
 
-lessons = Router()
+courses = Router()
 
 
-@lessons.callback_query(F.data.startswith("table:"))
-async def lessons_hr_one(call: types.CallbackQuery):
-    await call.message.delete()
-
-    table_id = int(call.data.split(":")[1])
-    table_name = f"medias_table{table_id}"
-    select_table = await db.select_all_media(table_name=table_name)
-    extract = extracter(all_medias=select_table, delimiter=6)
+@courses.message(F.text == "📚 Kurslar")
+async def courses_hr_one(message: types.Message):
+    all_courses = await db.select_all_tables(
+        table_type='kurs'
+    )
+    extract = extracter(all_medias=all_courses, delimiter=10)
     current_page = 1
     all_pages = len(extract)
     items = extract[current_page - 1]
-    ibutton = key_returner_selected(
-        items=items, current_page=current_page, all_pages=all_pages, selected=1, table_name=table_name
+    key = key_returner(
+        items=items, current_page=current_page, all_pages=all_pages
     )
+    text = str()
+    for n in items:
+        text += f"{n['table_number']}. {n['table_name']}\n"
+    await message.answer(
+        text=text, reply_markup=key
+    )
+
+
+@courses.callback_query(F.data.startswith("courses_next:"))
+async def start_next_page(call: types.CallbackQuery):
+    current_page = int(call.data.split(':')[1])
+    if current_page == 1:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
+        )
+    else:
+        tables = await db.select_all_tables(
+            table_type='kurs'
+        )
+        extract = extracter(
+            all_medias=tables, delimiter=10
+        )
+        len_extract = len(extract)
+        current_page += 1
+        await call.answer(
+            cache_time=0
+        )
+        items = extract[current_page - 1]
+        key = key_returner(
+            items=items, current_page=current_page, all_pages=len_extract
+        )
+        text = str()
+        for n in items:
+            text += f"{n['table_number']}. {n['table_name']}\n"
+        await call.message.edit_text(
+            text=text, reply_markup=key
+        )
+
+
+channels_list = [-1001917132582]
+
+
+@courses.callback_query(F.data.startswith("courses_prev:"))
+async def start_prev_page(call: types.CallbackQuery):
+    current_page = int(call.data.split(':')[1])
+    if current_page == 1:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
+        )
+    else:
+        tables = await db.select_all_tables(
+            table_type='kurs'
+        )
+        extract = extracter(
+            all_medias=tables, delimiter=10
+        )
+        len_extract = len(extract)
+        current_page -= 1
+
+        await call.answer(
+            cache_time=0
+        )
+        items = extract[current_page - 1]
+        key = key_returner(
+            items=items, current_page=current_page, all_pages=len_extract
+        )
+        text = str()
+        for n in items:
+            text += f"{n['table_number']}. {n['table_name']}\n"
+        await call.message.edit_text(
+            text=text, reply_markup=key
+        )
+
+
+@courses.callback_query(F.data.startswith("courses:"))
+async def lessons_hr_one(call: types.CallbackQuery):
+    await call.answer(
+        text="Bo'lim hozircha ishga tushirilmadi!"
+    )
+
+    # table_id = int(call.data.split(":")[1])
+    # table_name = f"medias_table{table_id}"
+    # select_table = await db.select_all_media(
+    #     table_name=table_name
+    # )
+    # extract = extracter(
+    #     all_medias=select_table, delimiter=6
+    # )
+    # current_page = 1
+    # all_pages = len(extract)
+    # items = extract[current_page - 1]
+    # ibutton = key_returner_selected(
+    #     items=items, current_page=current_page, all_pages=all_pages, selected=1, table_name=table_name
+    # )
     #
     # if items[0]['photo_id']:
     #     await call.message.answer_photo(
@@ -35,12 +127,12 @@ async def lessons_hr_one(call: types.CallbackQuery):
     #         document=items[0]['document_id'], protect_content=True
     #     )
     # if items[0]['video_id']:
-    await call.message.answer_video(
-        video=items[0]['video_id'], caption=items[0]['caption'], reply_markup=ibutton
-    )
+    # await call.message.answer_video(
+    #     video=items[0]['video_id'], caption=items[0]['caption'], reply_markup=ibutton
+    # )
 
 
-@lessons.callback_query(F.data.startswith("id:"))
+@courses.callback_query(F.data.startswith("id:"))
 async def get_id_and_selected(call: types.CallbackQuery):
     await call.answer(
         cache_time=0
@@ -79,4 +171,3 @@ async def get_id_and_selected(call: types.CallbackQuery):
             caption=selected_media['caption']
         ), reply_markup=ibutton
     )
-
