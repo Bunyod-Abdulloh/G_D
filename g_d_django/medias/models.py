@@ -102,6 +102,7 @@ class Table10(models.Model):
 class Tables(models.Model):
     table_number = models.IntegerField(verbose_name='Tartib raqami:', primary_key=True, null=False)
     table_name = models.CharField(verbose_name='Nomi:', max_length=200, null=True)
+    table_type = models.CharField(verbose_name='Turi:', max_length=100, null=True)
     channel_id = models.CharField(verbose_name='Kanal ID raqami:', max_length=150, null=True, blank=True)
     comment = models.TextField(verbose_name='Izohlar:', null=True, blank=True)
     files = models.BooleanField(verbose_name='Fayllar yuklangan bo\'lsa katakchani belgilab qo\'ying',

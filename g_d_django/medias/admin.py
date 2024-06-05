@@ -9,9 +9,9 @@ class CommonAdmin(admin.ModelAdmin):
     # search_fields = ('file_name',)
 
 
-class CommonAdminTwo(admin.ModelAdmin):
+class TablesAdmin(admin.ModelAdmin):
     actions_on_top = False
-    list_display = ('table_number', 'table_name', 'files')
+    list_display = ('table_number', 'table_name', 'files', 'table_type',)
     ordering = ('table_number',)
 
 
@@ -35,5 +35,5 @@ for table in tables:
 
 admin.site.register(Table9, Table9Admin)
 admin.site.register(Table10, Table10Admin)
-admin.site.register(Tables, CommonAdminTwo)
+admin.site.register(Tables, TablesAdmin)
 admin.site.register(User)
