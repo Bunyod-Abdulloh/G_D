@@ -57,7 +57,7 @@ async def articles_hr_prev(call: types.CallbackQuery):
 async def articles_hr_alert(call: types.CallbackQuery):
     current_page = call.data.split(":")[1]
     await call.answer(
-        text=f"Siz {current_page} sahifadasiz", show_alert=True
+        text=f"Siz {current_page} - sahifadasiz", show_alert=True
     )
 
 

@@ -80,7 +80,8 @@ class Table9(models.Model):
     video_id = models.CharField(verbose_name="Video ID", max_length=150, blank=True)
     voice_id = models.CharField(verbose_name="Voice ID", max_length=150, blank=True)
     document_id = models.CharField(verbose_name="Document ID", max_length=150, blank=True)
-    file_name = models.CharField(verbose_name="Fayl nomi", max_length=150, null=True)
+    category = models.CharField(verbose_name="Kategoriya", max_length=150, null=True)
+    subcategory = models.CharField(verbose_name="Subkategoriya", max_length=150, null=True)
     caption = models.TextField(verbose_name="Tavsif", null=True)
     link = models.CharField(verbose_name="Youtube link", max_length=200, null=True, blank=True)
 

@@ -111,6 +111,10 @@ class Database:
         sql = f"SELECT * FROM {table_name} ORDER BY lesson_number"
         return await self.execute(sql, fetch=True)
 
+    async def select_projects(self):
+        sql = f"SELECT DISTINCT category FROM medias_table9"
+        return await self.execute(sql, fetch=True)
+
     async def select_all_articles(self):
         sql = f"SELECT * FROM medias_table10 ORDER BY articles_number"
         return await self.execute(sql, fetch=True)
