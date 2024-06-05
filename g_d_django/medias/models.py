@@ -72,11 +72,13 @@ class Table8(BaseLessonModel):
         verbose_name_plural = 'Ruhiy salomatlik'
 
 
-class Table9(BaseLessonModel):
-    lesson_number = models.IntegerField(verbose_name="Tartib raqam", primary_key=True)
+class Table9(models.Model):
+    id = models.AutoField(primary_key=True)
+    lesson_number = models.IntegerField(verbose_name="Tartib raqam", null=True)
     audio_id = models.CharField(verbose_name="Audio ID", max_length=150, blank=True)
-    photo_id = models.CharField(verbose_name="Rasm ID", max_length=150, blank=True)
+    photo_id = models.CharField(verbose_name="Photo ID", max_length=150, blank=True)
     video_id = models.CharField(verbose_name="Video ID", max_length=150, blank=True)
+    voice_id = models.CharField(verbose_name="Voice ID", max_length=150, blank=True)
     document_id = models.CharField(verbose_name="Document ID", max_length=150, blank=True)
     file_name = models.CharField(verbose_name="Fayl nomi", max_length=150, null=True)
     caption = models.TextField(verbose_name="Tavsif", null=True)
@@ -88,13 +90,8 @@ class Table9(BaseLessonModel):
 
 
 class Table10(models.Model):
-    articles_number = models.IntegerField(verbose_name="Maqola tartib raqami", primary_key=True)
-    audio_id = models.CharField(verbose_name="Audio ID", max_length=150, blank=True)
-    photo_id = models.CharField(verbose_name="Rasm ID", max_length=150, blank=True)
-    video_id = models.CharField(verbose_name="Video ID", max_length=150, blank=True)
-    document_id = models.CharField(verbose_name="Document ID", max_length=150, blank=True)
-    file_name = models.CharField(verbose_name="Fayl nomi", max_length=150, null=True)
-    articles_text = models.TextField(verbose_name="Maqola matni", null=True, blank=True)
+    articles_number = models.IntegerField(verbose_name="Tartib raqami", primary_key=True)
+    file_name = models.CharField(verbose_name="Maqola nomi", max_length=150, null=True)
     link = models.CharField(verbose_name="Maqola linki", max_length=150, null=True)
 
     class Meta:
@@ -103,13 +100,13 @@ class Table10(models.Model):
 
 
 class Tables(models.Model):
-    table_number = models.IntegerField(verbose_name='Dars tartib raqami:', primary_key=True, null=False)
-    table_name = models.CharField(verbose_name='Dars nomi:', max_length=200, null=True)
+    table_number = models.IntegerField(verbose_name='Tartib raqami:', primary_key=True, null=False)
+    table_name = models.CharField(verbose_name='Nomi:', max_length=200, null=True)
     channel_id = models.CharField(verbose_name='Kanal ID raqami:', max_length=150, null=True, blank=True)
     comment = models.TextField(verbose_name='Izohlar:', null=True, blank=True)
-    files = models.BooleanField(verbose_name='Darsga fayllar yuklangan bo\'lsa katakchani belgilab qo\'ying',
+    files = models.BooleanField(verbose_name='Fayllar yuklangan bo\'lsa katakchani belgilab qo\'ying',
                                 default=False)
 
     class Meta:
-        verbose_name = 'Darslar jadvali'
-        verbose_name_plural = 'Darslar jadvali'
+        verbose_name = 'Dars va kurslar jadvali'
+        verbose_name_plural = 'Dars va kurslar jadvali'

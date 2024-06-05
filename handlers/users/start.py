@@ -15,23 +15,22 @@ async def do_start(message: types.Message):
     telegram_id = message.from_user.id
     full_name = message.from_user.full_name
     username = message.from_user.username
-    all_tables = await db.select_all_tables()
-    extract = extracter(all_medias=all_tables, delimiter=10)
-    current_page = 1
-    all_pages = len(extract)
-    items = extract[current_page - 1]
-    key = key_returner(
-        items=items, current_page=current_page, all_pages=all_pages
-    )
-    text = str()
-    for n in items:
-        text += f"{n['table_number']}. {n['table_name']}\n"
+    # all_tables = await db.select_all_tables()
+    # extract = extracter(all_medias=all_tables, delimiter=10)
+    # current_page = 1
+    # all_pages = len(extract)
+    # items = extract[current_page - 1]
+    # key = key_returner(
+    #     items=items, current_page=current_page, all_pages=all_pages
+    # )
+    # text = str()
+    # for n in items:
+    #     text += f"{n['table_number']}. {n['table_name']}\n"
     try:
         await db.add_user(telegram_id=telegram_id, full_name=full_name, username=username)
     except Exception as error:
         logger.info(error)
     await message.answer(f"Assalomu alaykum {full_name}! Botimizga xush kelibsiz!", reply_markup=main_dkb)
-    await message.answer(text=text, reply_markup=key)
 
 
 @router.callback_query(F.data.startswith("next:"))
@@ -97,7 +96,7 @@ async def samplerr(message: types.Message):
     print("o'zgardi")
 
 
-@router.message(F.photo | F.audio | F.video | F.document)
+@router.message(F.photo | F.audio | F.video | F.document | F.voice)
 async def get_media(message: types.Message):
     if message.photo:
         await message.answer(
@@ -114,4 +113,8 @@ async def get_media(message: types.Message):
     if message.document:
         await message.answer(
             text=f"<code>{message.document.file_id}</code>"
+        )
+    if message.voice:
+        await message.answer(
+            text=f"<code>{message.voice.file_id}</code>"
         )
