@@ -24,7 +24,7 @@ class Table9Admin(admin.ModelAdmin):
 
 class Table10Admin(admin.ModelAdmin):
     actions_on_top = False
-    list_display = ('articles_number', 'file_name')
+    list_display = ('file_name',)
     ordering = ('articles_number',)
 
 

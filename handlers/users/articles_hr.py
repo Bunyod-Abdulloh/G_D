@@ -43,9 +43,11 @@ async def articles_hr_prev(call: types.CallbackQuery):
 
     extracted_articles = extract[current_page - 1]
     articles_ = str()
-
-    for index, n in enumerate(extracted_articles):
-        articles_ += f"{index + 1}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+    # index = all_articles.index(extract[current_page - 1][-1])
+    print(all_articles[current_page - 1])
+    sonlar = [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15]
+    for n in extracted_articles:
+        articles_ += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
     try:
         await call.message.edit_text(
             text=articles_, reply_markup=key_returner_articles(
@@ -78,16 +80,16 @@ async def articles_hr_next(call: types.CallbackQuery):
     current_page = int(call.data.split(":")[1])
     all_pages = len(extract)
 
-    if current_page == 1:
-        current_page = all_pages
+    if current_page == all_pages:
+        current_page = 1
     else:
         current_page += 1
 
     extracted_articles = extract[current_page - 1]
     articles_ = str()
 
-    for index, n in enumerate(extracted_articles):
-        articles_ += f"{index + 1}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+    for n in extracted_articles:
+        articles_ += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
 
     try:
         await call.message.edit_text(
