@@ -27,28 +27,61 @@ async def courses_hr_one(message: types.Message):
     )
 
 
-@courses.callback_query(F.data.startswith("courses_next:"))
-async def start_next_page(call: types.CallbackQuery):
+@courses.callback_query(F.data.startswith("courses_prev:"))
+async def start_prev_page(call: types.CallbackQuery):
+    tables = await db.select_all_tables(
+        table_type='kurs'
+    )
+    extract = extracter(
+        all_medias=tables, delimiter=10
+    )
     current_page = int(call.data.split(':')[1])
-    if current_page == 1:
+    all_pages = len(extract)
+
+    if current_page == all_pages:
         await call.answer(
             text="Boshqa sahifa mavjud emas!", show_alert=True
         )
     else:
-        tables = await db.select_all_tables(
-            table_type='kurs'
-        )
-        extract = extracter(
-            all_medias=tables, delimiter=10
-        )
-        len_extract = len(extract)
-        current_page += 1
         await call.answer(
             cache_time=0
         )
+        current_page -= 1
         items = extract[current_page - 1]
         key = key_returner(
-            items=items, current_page=current_page, all_pages=len_extract
+            items=items, current_page=current_page, all_pages=all_pages
+        )
+        text = str()
+        for n in items:
+            text += f"{n['table_number']}. {n['table_name']}\n"
+        await call.message.edit_text(
+            text=text, reply_markup=key
+        )
+
+
+@courses.callback_query(F.data.startswith("courses_next:"))
+async def start_next_page(call: types.CallbackQuery):
+    tables = await db.select_all_tables(
+        table_type='kurs'
+    )
+    extract = extracter(
+        all_medias=tables, delimiter=10
+    )
+    current_page = int(call.data.split(':')[1])
+    all_pages = len(extract)
+
+    if current_page == all_pages:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
+        )
+    else:
+        await call.answer(
+            cache_time=0
+        )
+        current_page += 1
+        items = extract[current_page - 1]
+        key = key_returner(
+            items=items, current_page=current_page, all_pages=len(extract)
         )
         text = str()
         for n in items:
@@ -59,38 +92,6 @@ async def start_next_page(call: types.CallbackQuery):
 
 
 channels_list = [-1001917132582]
-
-
-@courses.callback_query(F.data.startswith("courses_prev:"))
-async def start_prev_page(call: types.CallbackQuery):
-    current_page = int(call.data.split(':')[1])
-    if current_page == 1:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
-    else:
-        tables = await db.select_all_tables(
-            table_type='kurs'
-        )
-        extract = extracter(
-            all_medias=tables, delimiter=10
-        )
-        len_extract = len(extract)
-        current_page -= 1
-
-        await call.answer(
-            cache_time=0
-        )
-        items = extract[current_page - 1]
-        key = key_returner(
-            items=items, current_page=current_page, all_pages=len_extract
-        )
-        text = str()
-        for n in items:
-            text += f"{n['table_number']}. {n['table_name']}\n"
-        await call.message.edit_text(
-            text=text, reply_markup=key
-        )
 
 
 @courses.callback_query(F.data.startswith("courses:"))

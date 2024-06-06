@@ -74,7 +74,6 @@ class Table8(BaseLessonModel):
 
 class Table9(models.Model):
     id = models.AutoField(primary_key=True)
-    lesson_number = models.IntegerField(verbose_name="Tartib raqam", null=True)
     audio_id = models.CharField(verbose_name="Audio ID", max_length=150, blank=True)
     photo_id = models.CharField(verbose_name="Photo ID", max_length=150, blank=True)
     video_id = models.CharField(verbose_name="Video ID", max_length=150, blank=True)

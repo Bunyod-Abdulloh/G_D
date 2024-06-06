@@ -99,7 +99,7 @@ def key_returner_projects(current_page, all_pages):
         ),
         InlineKeyboardButton(
             text=f"{current_page}/{all_pages}",
-            callback_data=f"alertprojects:{current_page}"
+            callback_data=f"alert_projects:{current_page}"
         ),
         InlineKeyboardButton(
             text="▶️",

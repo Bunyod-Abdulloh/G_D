@@ -28,29 +28,33 @@ async def articles_hr_one(message: types.Message):
 
 @articles.callback_query(F.data.startswith("prev_articles"))
 async def articles_hr_prev(call: types.CallbackQuery):
-    await call.answer(cache_time=0)
     all_articles = await db.select_all_articles()
-    extract = extracter(all_medias=all_articles, delimiter=10)
-    len_extract = len(extract)
-    current_page = int(call.data.split(":")[1])
-    all_pages = len_extract
-
-    if current_page == 1:
-        current_page = len_extract
-    else:
-        current_page -= 1
-
-    extracted_articles = extract[current_page - 1]
-    articles = str()
-
-    for n in extracted_articles:
-        articles += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
-
-    await call.message.edit_text(
-        text=articles, reply_markup=key_returner_articles(
-            current_page=current_page, all_pages=all_pages
-        ), disable_web_page_preview=True
+    extract = extracter(
+        all_medias=all_articles, delimiter=10
     )
+    current_page = int(call.data.split(":")[1])
+    all_pages = len(extract)
+
+    if current_page == all_pages:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
+        )
+    else:
+        await call.answer(
+            cache_time=0
+        )
+        current_page -= 1
+        extracted_articles = extract[current_page - 1]
+        articles_ = str()
+
+        for n in extracted_articles:
+            articles_ += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+
+        await call.message.edit_text(
+            text=articles_, reply_markup=key_returner_articles(
+                current_page=current_page, all_pages=all_pages
+            ), disable_web_page_preview=True
+        )
 
 
 @articles.callback_query(F.data.startswith("alertarticles"))
@@ -63,26 +67,30 @@ async def articles_hr_alert(call: types.CallbackQuery):
 
 @articles.callback_query(F.data.startswith("next_articles"))
 async def articles_hr_next(call: types.CallbackQuery):
-    await call.answer(cache_time=0)
     all_articles = await db.select_all_articles()
-    extract = extracter(all_medias=all_articles, delimiter=10)
-    len_extract = len(extract)
-    current_page = int(call.data.split(":")[1])
-    all_pages = len_extract
-
-    if current_page == len_extract:
-        current_page = 1
-    else:
-        current_page += 1
-
-    extracted_articles = extract[current_page - 1]
-    articles = str()
-
-    for n in extracted_articles:
-        articles += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
-
-    await call.message.edit_text(
-        text=articles, reply_markup=key_returner_articles(
-            current_page=current_page, all_pages=all_pages
-        ), disable_web_page_preview=True
+    extract = extracter(
+        all_medias=all_articles, delimiter=10
     )
+    current_page = int(call.data.split(":")[1])
+    all_pages = len(extract)
+
+    if current_page == all_pages:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
+        )
+    else:
+        await call.answer(
+            cache_time=0
+        )
+        current_page += 1
+        extracted_articles = extract[current_page - 1]
+        articles_ = str()
+
+        for n in extracted_articles:
+            articles_ += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+
+        await call.message.edit_text(
+            text=articles_, reply_markup=key_returner_articles(
+                current_page=current_page, all_pages=all_pages
+            ), disable_web_page_preview=True
+        )

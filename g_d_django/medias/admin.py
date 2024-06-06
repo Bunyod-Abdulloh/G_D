@@ -17,8 +17,8 @@ class TablesAdmin(admin.ModelAdmin):
 
 class Table9Admin(admin.ModelAdmin):
     actions_on_top = False
-    list_display = ('lesson_number', 'category', 'subcategory')
-    ordering = ('lesson_number',)
+    list_display = ('category', 'subcategory')
+    ordering = ('id',)
     list_filter = ('category',)
 
 
