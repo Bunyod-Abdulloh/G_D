@@ -1,3 +1,4 @@
+import aiogram.exceptions
 from aiogram import Router, F, types
 
 from handlers.functions.functions_one import extracter
@@ -35,25 +36,28 @@ async def articles_hr_prev(call: types.CallbackQuery):
     current_page = int(call.data.split(":")[1])
     all_pages = len(extract)
 
-    if current_page == all_pages:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
+    if current_page == 1:
+        current_page = all_pages
     else:
-        await call.answer(
-            cache_time=0
-        )
         current_page -= 1
-        extracted_articles = extract[current_page - 1]
-        articles_ = str()
 
-        for n in extracted_articles:
-            articles_ += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+    extracted_articles = extract[current_page - 1]
+    articles_ = str()
 
+    for index, n in enumerate(extracted_articles):
+        articles_ += f"{index + 1}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+    try:
         await call.message.edit_text(
             text=articles_, reply_markup=key_returner_articles(
                 current_page=current_page, all_pages=all_pages
             ), disable_web_page_preview=True
+        )
+        await call.answer(
+            cache_time=0
+        )
+    except aiogram.exceptions.TelegramBadRequest:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
         )
 
 
@@ -74,23 +78,27 @@ async def articles_hr_next(call: types.CallbackQuery):
     current_page = int(call.data.split(":")[1])
     all_pages = len(extract)
 
-    if current_page == all_pages:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
+    if current_page == 1:
+        current_page = all_pages
     else:
-        await call.answer(
-            cache_time=0
-        )
         current_page += 1
-        extracted_articles = extract[current_page - 1]
-        articles_ = str()
 
-        for n in extracted_articles:
-            articles_ += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+    extracted_articles = extract[current_page - 1]
+    articles_ = str()
 
+    for index, n in enumerate(extracted_articles):
+        articles_ += f"{index + 1}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+
+    try:
         await call.message.edit_text(
             text=articles_, reply_markup=key_returner_articles(
                 current_page=current_page, all_pages=all_pages
             ), disable_web_page_preview=True
+        )
+        await call.answer(
+            cache_time=0
+        )
+    except aiogram.exceptions.TelegramBadRequest:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
         )
