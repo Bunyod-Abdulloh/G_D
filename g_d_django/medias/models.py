@@ -73,7 +73,7 @@ class Table8(BaseLessonModel):
 
 
 class Table9(models.Model):
-    id = models.IntegerField(verbose_name="Tartib raqami", primary_key=True)
+    sequence = models.IntegerField(verbose_name="Tartib raqami")
     audio_id = models.CharField(verbose_name="Audio ID", max_length=150, blank=True)
     photo_id = models.CharField(verbose_name="Photo ID", max_length=150, blank=True)
     video_id = models.CharField(verbose_name="Video ID", max_length=150, blank=True)
@@ -90,7 +90,7 @@ class Table9(models.Model):
 
 
 class Table10(models.Model):
-    articles_number = models.IntegerField(verbose_name="Tartib raqami", primary_key=True)
+    id = models.AutoField(verbose_name="Tartib raqami", primary_key=True)
     file_name = models.CharField(verbose_name="Maqola nomi", max_length=150, null=True)
     link = models.CharField(verbose_name="Maqola linki", max_length=150, null=True)
 

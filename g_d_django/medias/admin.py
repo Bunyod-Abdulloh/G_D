@@ -25,7 +25,7 @@ class Table9Admin(admin.ModelAdmin):
 class Table10Admin(admin.ModelAdmin):
     actions_on_top = False
     list_display = ('file_name',)
-    ordering = ('articles_number',)
+    ordering = ('id',)
 
 
 tables = [Table1, Table2, Table3, Table4, Table5, Table6, Table7, Table8]

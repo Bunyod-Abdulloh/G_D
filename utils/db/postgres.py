@@ -116,7 +116,7 @@ class Database:
         return await self.execute(sql, fetch=True)
 
     async def select_all_articles(self):
-        sql = f"SELECT * FROM medias_table10 ORDER BY articles_number"
+        sql = f"SELECT * FROM medias_table10 ORDER BY id"
         return await self.execute(sql, fetch=True)
 
     async def db_get_media_by_id(self, table_name, lesson_number):

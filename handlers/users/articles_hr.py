@@ -1,3 +1,5 @@
+import json
+
 import aiogram.exceptions
 from aiogram import Router, F, types
 
@@ -15,13 +17,13 @@ async def articles_hr_one(message: types.Message):
     current_page = 1
     all_pages = len(extract)
     extracted_articles = extract[current_page - 1]
-    articles = str()
-
+    articles_ = str()
+    
     for n in extracted_articles:
-        articles += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+        articles_ += f"{n['id']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
 
     await message.answer(
-        text=articles, reply_markup=key_returner_articles(
+        text=articles_, reply_markup=key_returner_articles(
             current_page=current_page, all_pages=all_pages
         ), disable_web_page_preview=True
     )
@@ -43,11 +45,8 @@ async def articles_hr_prev(call: types.CallbackQuery):
 
     extracted_articles = extract[current_page - 1]
     articles_ = str()
-    # index = all_articles.index(extract[current_page - 1][-1])
-    print(all_articles[current_page - 1])
-    sonlar = [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15]
     for n in extracted_articles:
-        articles_ += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+        articles_ += f"{n['id']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
     try:
         await call.message.edit_text(
             text=articles_, reply_markup=key_returner_articles(
@@ -89,7 +88,7 @@ async def articles_hr_next(call: types.CallbackQuery):
     articles_ = str()
 
     for n in extracted_articles:
-        articles_ += f"{n['articles_number']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
+        articles_ += f"{n['id']}. <a href='{n['link']}'>{n['file_name']}</a>\n"
 
     try:
         await call.message.edit_text(
