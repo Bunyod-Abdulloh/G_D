@@ -112,7 +112,14 @@ class Database:
         return await self.execute(sql, fetch=True)
 
     async def select_projects(self):
-        sql = f"SELECT DISTINCT category FROM medias_table9"
+        sql = """
+        SELECT row_number() OVER () AS rank, category, id
+        FROM (
+            SELECT DISTINCT ON (category) category, id
+            FROM medias_table9
+            ORDER BY category, id ASC
+        ) subquery
+        """
         return await self.execute(sql, fetch=True)
 
     async def select_all_articles(self):

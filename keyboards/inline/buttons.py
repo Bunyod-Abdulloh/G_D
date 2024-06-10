@@ -90,12 +90,20 @@ def key_returner_articles(current_page, all_pages):
     return keys.as_markup()
 
 
-def key_returner_projects(current_page, all_pages):
+def key_returner_projects(items, current_page, all_pages):
     keys = InlineKeyboardBuilder()
+    for item in items:
+        keys.add(
+            InlineKeyboardButton(
+                text=f"{item['rank']}",
+                callback_data=f"projects:{item['id']}"
+            )
+        )
+    keys.adjust(5)
     keys.row(
         InlineKeyboardButton(
             text="◀️",
-            callback_data=f"prev_projects:{current_page}"
+            callback_data=f"prev_projects:{current_page}:{all_pages}"
         ),
         InlineKeyboardButton(
             text=f"{current_page}/{all_pages}",
@@ -103,7 +111,7 @@ def key_returner_projects(current_page, all_pages):
         ),
         InlineKeyboardButton(
             text="▶️",
-            callback_data=f"next_projects:{current_page}"
+            callback_data=f"next_projects:{current_page}:{all_pages}"
         )
     )
     return keys.as_markup()

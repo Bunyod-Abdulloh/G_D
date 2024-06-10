@@ -5,26 +5,29 @@ from .models import User, Table1, Table2, Table3, Table4, Table5, Table6, Table7
 class CommonAdmin(admin.ModelAdmin):
     actions_on_top = False
     list_display = ('lesson_number', 'file_name', 'caption')
+    list_display_links = ('lesson_number', )
     ordering = ('lesson_number',)
-    # search_fields = ('file_name',)
 
 
 class TablesAdmin(admin.ModelAdmin):
     actions_on_top = False
-    list_display = ('table_number', 'table_name', 'files', 'table_type',)
+    list_display = ('table_number', 'table_name', 'table_type', )
+    list_display_links = ('table_name', )
     ordering = ('table_number',)
 
 
 class Table9Admin(admin.ModelAdmin):
     actions_on_top = False
-    list_display = ('category', 'subcategory')
+    list_display = ('sequence', 'subcategory', 'category',)
+    list_display_links = ('subcategory',)
     ordering = ('id',)
     list_filter = ('category',)
 
 
 class Table10Admin(admin.ModelAdmin):
     actions_on_top = False
-    list_display = ('file_name',)
+    list_display = ('id', 'file_name',)
+    list_display_links = ('file_name',)
     ordering = ('id',)
 
 

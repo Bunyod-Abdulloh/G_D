@@ -1,3 +1,4 @@
+import aiogram.exceptions
 from aiogram import Router, F, types
 
 from handlers.functions.functions_one import extracter
@@ -15,11 +16,11 @@ async def interviews_projects_hr_one(message: types.Message):
     all_pages = len(extract)
     items = extract[current_page - 1]
     projects = str()
-
-    for index, n in enumerate(items):
-        projects += f"{index + 1}. {n['category']}\n"
+    print(items)
+    for n in items:
+        projects += f"{n['rank']}. {n['category']}\n"
     markup = key_returner_projects(
-        current_page=current_page, all_pages=all_pages
+        items=items, current_page=current_page, all_pages=all_pages
     )
     await message.answer(
         text=projects, reply_markup=markup
@@ -29,31 +30,36 @@ async def interviews_projects_hr_one(message: types.Message):
 @interviews_projects.callback_query(F.data.startswith("prev_projects:"))
 async def interviews_projects_hr_prev(call: types.CallbackQuery):
     current_page = int(call.data.split(':')[1])
+    all_pages = int(call.data.split(':')[2])
+
     if current_page == 1:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
+        current_page = all_pages
     else:
-        all_projects = await db.select_projects()
-        extract = extracter(
-            all_medias=all_projects, delimiter=10
-        )
-        len_extract = len(extract)
         current_page -= 1
 
+    all_projects = await db.select_projects()
+    extract = extracter(
+        all_medias=all_projects, delimiter=10
+    )
+
+    items = extract[current_page - 1]
+    projects = str()
+
+    for n in items:
+        projects += f"{n['rank']}. {n['category']}\n"
+    markup = key_returner_projects(
+        items=items, current_page=current_page, all_pages=all_pages
+    )
+    try:
+        await call.message.edit_text(
+            text=projects, reply_markup=markup
+        )
         await call.answer(
             cache_time=0
         )
-        items = extract[current_page - 1]
-        projects = str()
-
-        for index, n in enumerate(items):
-            projects += f"{index + 1}. {n['category']}\n"
-        markup = key_returner_projects(
-            current_page=current_page, all_pages=len_extract
-        )
-        await call.message.edit_text(
-            text=projects, reply_markup=markup
+    except aiogram.exceptions.TelegramBadRequest:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
         )
 
 
@@ -65,32 +71,42 @@ async def interviews_projects_hr_alert(call: types.CallbackQuery):
     )
 
 
-@interviews_projects.callback_query(F.data.startswith("next_projects"))
+@interviews_projects.callback_query(F.data.startswith("projects:"))
+async def interviews_projects_hr_projects(call: types.CallbackQuery):
+    print(call.data)
+
+
+@interviews_projects.callback_query(F.data.startswith("next_projects:"))
 async def interviews_projects_hr_next(call: types.CallbackQuery):
     current_page = int(call.data.split(':')[1])
-    if current_page == 1:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
+    all_pages = int(call.data.split(':')[2])
+
+    if current_page == all_pages:
+        current_page = 1
     else:
-        all_projects = await db.select_projects()
-        extract = extracter(
-            all_medias=all_projects, delimiter=10
-        )
-        len_extract = len(extract)
         current_page += 1
 
+    all_projects = await db.select_projects()
+    extract = extracter(
+        all_medias=all_projects, delimiter=10
+    )
+    items = extract[current_page - 1]
+    projects = str()
+
+    for n in items:
+        projects += f"{n['rank']}. {n['category']}\n"
+    markup = key_returner_projects(
+        items=items, current_page=current_page, all_pages=all_pages
+    )
+
+    try:
+        await call.message.edit_text(
+            text=projects, reply_markup=markup
+        )
         await call.answer(
             cache_time=0
         )
-        items = extract[current_page - 1]
-        projects = str()
-
-        for index, n in enumerate(items):
-            projects += f"{index + 1}. {n['category']}\n"
-        markup = key_returner_projects(
-            current_page=current_page, all_pages=len_extract
-        )
-        await call.message.edit_text(
-            text=projects, reply_markup=markup
+    except aiogram.exceptions.TelegramBadRequest:
+        await call.answer(
+            text="Boshqa sahifa mavjud emas!", show_alert=True
         )
