@@ -16,7 +16,7 @@ async def interviews_projects_hr_one(message: types.Message):
     all_pages = len(extract)
     items = extract[current_page - 1]
     projects = str()
-    print(items)
+
     for n in items:
         projects += f"{n['rank']}. {n['category']}\n"
     markup = key_returner_projects(
@@ -73,7 +73,13 @@ async def interviews_projects_hr_alert(call: types.CallbackQuery):
 
 @interviews_projects.callback_query(F.data.startswith("projects:"))
 async def interviews_projects_hr_projects(call: types.CallbackQuery):
-    print(call.data)
+    category_id = int(call.data.split(":")[1])
+    get_category = await db.select_project_by_id(
+        id_=category_id
+    )
+    select_category = await db.select_project_by_categories(
+        category_name=get_category['category']
+    )
 
 
 @interviews_projects.callback_query(F.data.startswith("next_projects:"))

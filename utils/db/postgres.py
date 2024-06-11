@@ -122,6 +122,14 @@ class Database:
         """
         return await self.execute(sql, fetch=True)
 
+    async def select_project_by_id(self, id_):
+        sql = f"SELECT category FROM medias_table9 WHERE id='{id_}'"
+        return await self.execute(sql, fetchrow=True)
+
+    async def select_project_by_categories(self, category_name):
+        sql = f"SELECT * FROM medias_table9 WHERE category='{category_name}' ORDER BY sequence ASC"
+        return await self.execute(sql, fetch=True)
+
     async def select_all_articles(self):
         sql = f"SELECT * FROM medias_table10 ORDER BY id"
         return await self.execute(sql, fetch=True)
