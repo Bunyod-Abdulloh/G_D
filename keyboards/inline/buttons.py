@@ -116,6 +116,47 @@ def key_returner_projects(items, current_page, all_pages):
     )
     return keys.as_markup()
 
+
+def interviews_first_ibuttons(items, current_page, all_pages, selected):
+    builder = InlineKeyboardBuilder()
+    for item in items:
+        if selected == item['sequence']:
+            builder.add(
+                InlineKeyboardButton(
+                    text=f"[ {item['sequence']} ]",
+                    callback_data=f"select_projects:{item['id']}"
+                )
+            )
+        else:
+            builder.add(
+                InlineKeyboardButton(
+                    text=f"{item['sequence']}",
+                    callback_data=f"select_projects:{item['id']}"
+                )
+            )
+    builder.adjust(5)
+    builder.row(
+        InlineKeyboardButton(
+            text="◀️",
+            callback_data=f"prev_projects:{current_page}:{all_pages}"
+        ),
+        InlineKeyboardButton(
+            text=f"{current_page}/{all_pages}",
+            callback_data=f"alert_projects:{current_page}"
+        ),
+        InlineKeyboardButton(
+            text="▶️",
+            callback_data=f"next_projects:{current_page}:{all_pages}"
+        )
+    )
+    builder.row(
+        InlineKeyboardButton(
+            text="📖 Mundarija",
+            callback_data=f"content_projects:{current_page}:{items[0]['category']}"
+        )
+    )
+    return builder.as_markup()
+
 # async def tables_menu(callback_text):
 #     all_tables = await db.select_all_tables()
 #

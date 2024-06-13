@@ -3,6 +3,7 @@ from aiogram import Router, F, types
 
 from handlers.functions.functions_one import extracter
 from keyboards.inline.buttons import key_returner_projects
+from keyboards.reply.interviews_reply import interviews_cbuttons
 from loader import db
 
 interviews_projects = Router()
@@ -21,6 +22,9 @@ async def interviews_projects_hr_one(message: types.Message):
         projects += f"{n['rank']}. {n['category']}\n"
     markup = key_returner_projects(
         items=items, current_page=current_page, all_pages=all_pages
+    )
+    await message.answer(
+        text=message.text, reply_markup=interviews_cbuttons
     )
     await message.answer(
         text=projects, reply_markup=markup
@@ -68,17 +72,6 @@ async def interviews_projects_hr_alert(call: types.CallbackQuery):
     current_page = call.data.split(":")[1]
     await call.answer(
         text=f"Siz {current_page} - sahifadasiz", show_alert=True
-    )
-
-
-@interviews_projects.callback_query(F.data.startswith("projects:"))
-async def interviews_projects_hr_projects(call: types.CallbackQuery):
-    category_id = int(call.data.split(":")[1])
-    get_category = await db.select_project_by_id(
-        id_=category_id
-    )
-    select_category = await db.select_project_by_categories(
-        category_name=get_category['category']
     )
 
 
