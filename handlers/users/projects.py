@@ -33,6 +33,9 @@ async def interviews_projects_hr_one(message: types.Message):
 
 @interviews_projects.callback_query(F.data.startswith("prev_projects:"))
 async def interviews_projects_hr_prev(call: types.CallbackQuery):
+    await call.answer(
+        cache_time=0
+    )
     current_page = int(call.data.split(':')[1])
     all_pages = int(call.data.split(':')[2])
 
@@ -58,13 +61,8 @@ async def interviews_projects_hr_prev(call: types.CallbackQuery):
         await call.message.edit_text(
             text=projects, reply_markup=markup
         )
-        await call.answer(
-            cache_time=0
-        )
     except aiogram.exceptions.TelegramBadRequest:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
+        pass
 
 
 @interviews_projects.callback_query(F.data.startswith("alert_projects"))
@@ -77,6 +75,9 @@ async def interviews_projects_hr_alert(call: types.CallbackQuery):
 
 @interviews_projects.callback_query(F.data.startswith("next_projects:"))
 async def interviews_projects_hr_next(call: types.CallbackQuery):
+    await call.answer(
+        cache_time=0
+    )
     current_page = int(call.data.split(':')[1])
     all_pages = int(call.data.split(':')[2])
 
@@ -102,10 +103,5 @@ async def interviews_projects_hr_next(call: types.CallbackQuery):
         await call.message.edit_text(
             text=projects, reply_markup=markup
         )
-        await call.answer(
-            cache_time=0
-        )
     except aiogram.exceptions.TelegramBadRequest:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
+        pass

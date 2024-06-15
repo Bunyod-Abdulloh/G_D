@@ -124,29 +124,29 @@ def interviews_first_ibuttons(items, current_page, all_pages, selected):
             builder.add(
                 InlineKeyboardButton(
                     text=f"[ {item['sequence']} ]",
-                    callback_data=f"select_projects:{item['id']}"
+                    callback_data=f"select_projects:{item['id']}:{current_page}"
                 )
             )
         else:
             builder.add(
                 InlineKeyboardButton(
                     text=f"{item['sequence']}",
-                    callback_data=f"select_projects:{item['id']}"
+                    callback_data=f"select_projects:{item['id']}:{current_page}"
                 )
             )
     builder.adjust(5)
     builder.row(
         InlineKeyboardButton(
             text="◀️",
-            callback_data=f"prev_projects:{current_page}:{all_pages}"
+            callback_data=f"prev_pts:{current_page}:{all_pages}:{items[0]['id']}"
         ),
         InlineKeyboardButton(
             text=f"{current_page}/{all_pages}",
-            callback_data=f"alert_projects:{current_page}"
+            callback_data=f"alert_pts:{current_page}"
         ),
         InlineKeyboardButton(
             text="▶️",
-            callback_data=f"next_projects:{current_page}:{all_pages}"
+            callback_data=f"next_pts:{current_page}:{all_pages}"
         )
     )
     builder.row(
