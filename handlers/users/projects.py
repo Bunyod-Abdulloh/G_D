@@ -4,6 +4,7 @@ from aiogram import Router, F, types
 from handlers.functions.functions_one import extracter
 from keyboards.inline.buttons import key_returner_projects
 from keyboards.reply.interviews_reply import interviews_cbuttons
+from keyboards.reply.main_dkb import main_dkb
 from loader import db
 
 interviews_projects = Router()
@@ -36,18 +37,17 @@ async def interviews_projects_hr_prev(call: types.CallbackQuery):
     await call.answer(
         cache_time=0
     )
+    all_projects = await db.select_projects()
+    extract = extracter(
+        all_medias=all_projects, delimiter=10
+    )
     current_page = int(call.data.split(':')[1])
-    all_pages = int(call.data.split(':')[2])
+    all_pages = len(extract)
 
     if current_page == 1:
         current_page = all_pages
     else:
         current_page -= 1
-
-    all_projects = await db.select_projects()
-    extract = extracter(
-        all_medias=all_projects, delimiter=10
-    )
 
     items = extract[current_page - 1]
     projects = str()
@@ -105,3 +105,10 @@ async def interviews_projects_hr_next(call: types.CallbackQuery):
         )
     except aiogram.exceptions.TelegramBadRequest:
         pass
+
+
+@interviews_projects.message(F.text == "⬅️ Ortga")
+async def back_to_projects_main(message: types.Message):
+    await interviews_projects_hr_one(
+        message=message
+    )

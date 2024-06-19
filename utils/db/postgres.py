@@ -92,6 +92,10 @@ class Database:
         sql = f"SELECT * FROM medias_tables WHERE table_type='{table_type}' ORDER BY table_number ASC"
         return await self.execute(sql, fetch=True)
 
+    async def get_channel_id(self, table_number):
+        sql = f"SELECT channel_id FROM medias_tables WHERE table_number='{table_number}'"
+        return await self.execute(sql, fetchrow=True)
+
     async def select_media_by_id(self, table_number):
         sql = f"SELECT * FROM medias_tables WHERE table_number='{table_number}'"
         return await self.execute(sql, fetchrow=True)

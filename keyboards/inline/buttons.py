@@ -1,7 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from loader import db
 
 inline_keyboard = [[
     InlineKeyboardButton(text="✅ Yes", callback_data='yes'),
@@ -10,7 +9,7 @@ inline_keyboard = [[
 are_you_sure_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-def key_returner(items, current_page, all_pages):
+def courses_ibuttons(items, current_page, all_pages):
     keys = InlineKeyboardBuilder()
     for item in items:
         keys.add(
@@ -103,7 +102,7 @@ def key_returner_projects(items, current_page, all_pages):
     keys.row(
         InlineKeyboardButton(
             text="◀️",
-            callback_data=f"prev_projects:{current_page}:{all_pages}"
+            callback_data=f"prev_projects:{current_page}"
         ),
         InlineKeyboardButton(
             text=f"{current_page}/{all_pages}",
@@ -111,7 +110,7 @@ def key_returner_projects(items, current_page, all_pages):
         ),
         InlineKeyboardButton(
             text="▶️",
-            callback_data=f"next_projects:{current_page}:{all_pages}"
+            callback_data=f"next_projects:{current_page}"
         )
     )
     return keys.as_markup()
@@ -131,14 +130,14 @@ def interviews_first_ibuttons(items, current_page, all_pages, selected):
             builder.add(
                 InlineKeyboardButton(
                     text=f"{item['sequence']}",
-                    callback_data=f"select_projects:{item['id']}:{current_page}"
+                    callback_data=f"select_pts:{item['id']}:{current_page}"
                 )
             )
     builder.adjust(5)
     builder.row(
         InlineKeyboardButton(
             text="◀️",
-            callback_data=f"prev_pts:{current_page}:{all_pages}:{items[0]['id']}"
+            callback_data=f"prev_pts:{current_page}:{items[0]['id']}"
         ),
         InlineKeyboardButton(
             text=f"{current_page}/{all_pages}",
@@ -146,7 +145,7 @@ def interviews_first_ibuttons(items, current_page, all_pages, selected):
         ),
         InlineKeyboardButton(
             text="▶️",
-            callback_data=f"next_pts:{current_page}:{all_pages}"
+            callback_data=f"next_pts:{current_page}:{items[0]['id']}"
         )
     )
     builder.row(

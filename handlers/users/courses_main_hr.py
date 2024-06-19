@@ -1,7 +1,8 @@
+import aiogram.exceptions
 from aiogram import Router, F, types
 
-from handlers.functions.functions_one import extracter
-from keyboards.inline.buttons import key_returner_selected, key_returner
+from handlers.functions.functions_one import extracter, check_channel_subscription
+from keyboards.inline.buttons import key_returner_selected, courses_ibuttons
 from loader import db
 
 courses = Router()
@@ -16,7 +17,7 @@ async def courses_hr_one(message: types.Message):
     current_page = 1
     all_pages = len(extract)
     items = extract[current_page - 1]
-    key = key_returner(
+    key = courses_ibuttons(
         items=items, current_page=current_page, all_pages=all_pages
     )
     text = str()
@@ -29,6 +30,9 @@ async def courses_hr_one(message: types.Message):
 
 @courses.callback_query(F.data.startswith("courses_prev:"))
 async def start_prev_page(call: types.CallbackQuery):
+    await call.answer(
+        cache_time=0
+    )
     tables = await db.select_all_tables(
         table_type='kurs'
     )
@@ -38,29 +42,31 @@ async def start_prev_page(call: types.CallbackQuery):
     current_page = int(call.data.split(':')[1])
     all_pages = len(extract)
 
-    if current_page == all_pages:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
+    if current_page == 1:
+        current_page = all_pages
     else:
-        await call.answer(
-            cache_time=0
-        )
         current_page -= 1
-        items = extract[current_page - 1]
-        key = key_returner(
-            items=items, current_page=current_page, all_pages=all_pages
-        )
-        text = str()
-        for n in items:
-            text += f"{n['table_number']}. {n['table_name']}\n"
+
+    items = extract[current_page - 1]
+    key = courses_ibuttons(
+        items=items, current_page=current_page, all_pages=all_pages
+    )
+    text = str()
+    for n in items:
+        text += f"{n['table_number']}. {n['table_name']}\n"
+    try:
         await call.message.edit_text(
             text=text, reply_markup=key
         )
+    except aiogram.exceptions.TelegramBadRequest:
+        pass
 
 
 @courses.callback_query(F.data.startswith("courses_next:"))
 async def start_next_page(call: types.CallbackQuery):
+    await call.answer(
+        cache_time=0
+    )
     tables = await db.select_all_tables(
         table_type='kurs'
     )
@@ -71,24 +77,22 @@ async def start_next_page(call: types.CallbackQuery):
     all_pages = len(extract)
 
     if current_page == all_pages:
-        await call.answer(
-            text="Boshqa sahifa mavjud emas!", show_alert=True
-        )
+        current_page = 1
     else:
-        await call.answer(
-            cache_time=0
-        )
         current_page += 1
-        items = extract[current_page - 1]
-        key = key_returner(
-            items=items, current_page=current_page, all_pages=len(extract)
-        )
-        text = str()
-        for n in items:
-            text += f"{n['table_number']}. {n['table_name']}\n"
+    items = extract[current_page - 1]
+    key = courses_ibuttons(
+        items=items, current_page=current_page, all_pages=len(extract)
+    )
+    text = str()
+    for n in items:
+        text += f"{n['table_number']}. {n['table_name']}\n"
+    try:
         await call.message.edit_text(
             text=text, reply_markup=key
         )
+    except aiogram.exceptions.TelegramBadRequest:
+        pass
 
 
 channels_list = [-1001917132582]
@@ -96,15 +100,29 @@ channels_list = [-1001917132582]
 
 @courses.callback_query(F.data.startswith("courses:"))
 async def lessons_hr_one(call: types.CallbackQuery):
-    await call.answer(
-        text="Bo'lim hozircha ishga tushirilmadi!"
+    user_id = call.from_user.id
+    table_id = int(call.data.split(":")[1])
+    get_channel_id = await db.get_channel_id(
+        table_number=table_id
+    )
+    channel_id = get_channel_id['channel_id']
+    check_user = await check_channel_subscription(
+        user_id=user_id, channel_id=channel_id
     )
 
-    # table_id = int(call.data.split(":")[1])
+    if check_user:
+        await call.answer(
+            text="Darslar hozircha botga yuklanmadi!", show_alert=True
+        )
+    else:
+        await call.answer(
+            text="Siz kursni xarid qilmagansiz! Admin bilan bog'laning", show_alert=True
+        )
     # table_name = f"medias_table{table_id}"
     # select_table = await db.select_all_media(
     #     table_name=table_name
     # )
+
     # extract = extracter(
     #     all_medias=select_table, delimiter=6
     # )
@@ -171,4 +189,12 @@ async def get_id_and_selected(call: types.CallbackQuery):
             media=selected_media['video_id'],
             caption=selected_media['caption']
         ), reply_markup=ibutton
+    )
+
+
+@courses.callback_query(F.data.startswith("courses_alert:"))
+async def courses_alert(call: types.CallbackQuery):
+    current_page = call.data.split(":")[1]
+    await call.answer(
+        text=f"Siz {current_page} - sahifadasiz!", show_alert=True
     )
