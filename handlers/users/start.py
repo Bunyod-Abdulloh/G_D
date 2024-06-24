@@ -16,7 +16,7 @@ async def do_start(message: types.Message):
         await db.add_user(telegram_id=telegram_id, full_name=full_name, username=username)
     except Exception as error:
         logger.info(error)
-    await message.answer(f"Assalomu alaykum {full_name}! Botimizga xush kelibsiz!", reply_markup=main_dkb)
+    await message.answer(f"Assalomu alaykum {full_name}!\n\nBotimizga xush kelibsiz!", reply_markup=main_dkb)
 
 
 @router.message(F.text == "🏡 Bosh sahifa")
@@ -48,3 +48,4 @@ async def get_media(message: types.Message):
         await message.answer(
             text=f"<code>{message.voice.file_id}</code>"
         )
+# pandas==2.1.0
